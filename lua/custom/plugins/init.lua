@@ -57,4 +57,65 @@ return {
       })
     end,
   },
+
+  --  code [folding mod] + [promise-asyn] dependency
+  --  https://github.com/kevinhwang91/nvim-ufo
+  --  https://github.com/kevinhwang91/promise-async
+  {
+    'kevinhwang91/nvim-ufo',
+    -- event = { 'User BaseFile' },
+    dependencies = { 'kevinhwang91/promise-async' },
+    opts = {
+      preview = {
+        mappings = {
+          scrollB = '<C-b>',
+          scrollF = '<C-f>',
+          scrollU = '<C-u>',
+          scrollD = '<C-d>',
+        },
+      },
+      provider_selector = function(_, filetype, buftype)
+        local function handleFallbackException(bufnr, err, providerName)
+          if type(err) == 'string' and err:match 'UfoFallbackException' then
+            return require('ufo').getFolds(bufnr, providerName)
+          else
+            return require('promise').reject(err)
+          end
+        end
+
+        -- only use indent until a file is opened
+        return (filetype == '' or buftype == 'nofile') and 'indent'
+          or function(bufnr)
+            return require('ufo')
+              .getFolds(bufnr, 'lsp')
+              :catch(function(err)
+                return handleFallbackException(bufnr, err, 'treesitter')
+              end)
+              :catch(function(err)
+                return handleFallbackException(bufnr, err, 'indent')
+              end)
+          end
+      end,
+    },
+  },
+  {
+    'luukvbaal/statuscol.nvim',
+    opts = function()
+      local builtin = require 'statuscol.builtin'
+      return {
+        setopt = true,
+        -- override the default list of segments with:
+        -- number-less fold indicator, then signs, then line number & separator
+        segments = {
+          { text = { builtin.foldfunc }, click = 'v:lua.ScFa' },
+          { text = { '%s' }, click = 'v:lua.ScSa' },
+          {
+            text = { builtin.lnumfunc, ' ' },
+            condition = { true, builtin.not_empty },
+            click = 'v:lua.ScLa',
+          },
+        },
+      }
+    end,
+  },
 }

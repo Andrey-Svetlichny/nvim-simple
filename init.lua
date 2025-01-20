@@ -98,8 +98,18 @@ vim.g.have_nerd_font = true
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+vim.opt.cmdheight = 0 -- Hide command line unless needed.
+
+vim.opt.foldenable = true -- Enable fold for nvim-ufo.
+vim.opt.foldlevel = 99 -- set highest foldlevel for nvim-ufo.
+vim.opt.foldlevelstart = 99 -- Start with all code unfolded.
+vim.opt.foldcolumn = '1' -- Show foldcolumn in nvim 0.9+.
+vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+-- vim.opt.foldmethod = 'expr'
+-- vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+
 -- Make line numbers default
--- vim.opt.number = true
+vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 vim.opt.relativenumber = true
