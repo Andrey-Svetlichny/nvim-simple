@@ -138,4 +138,13 @@ return {
       'RainbowMultiDelim',
     },
   },
+
+  --  [hex colors]
+  --  https://github.com/brenoprata10/nvim-highlight-colors
+  {
+    'brenoprata10/nvim-highlight-colors',
+    -- event = "User BaseFile",
+    cmd = { 'HighlightColors' }, -- followed by 'On' / 'Off' / 'Toggle'
+    opts = { enabled_named_colors = false },
+  },
 }
